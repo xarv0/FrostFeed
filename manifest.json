@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "FrostFeed",
+  "version": "1.0.0",
+  "description": "Browse archived Reddit user profiles natively inside Reddit's UI, powered by Arctic Shift.",
+  "author": "xarv0",
+  "minimum_chrome_version": "102",
+  "permissions": [],
+  "host_permissions": ["https://arctic-shift.photon-reddit.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.reddit.com/*",
+        "https://reddit.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "FrostFeed",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  }
+}

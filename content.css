@@ -1,0 +1,1353 @@
+/* Reddit Archive View — content styles
+ *
+ * Mirrors Reddit's current profile feed (shreddit):
+ *   - Feed options bar: borderless sort & view-density dropdowns + hairline rule
+ *   - Posts:            subreddit/user credit, 18px title, flair/NSFW pills,
+ *                       rounded-16px media/gallery/video/crosspost/link cards,
+ *                       filled pill action row, hairline divider
+ *   - Comments:         subreddit + thread title credit, author/OP/MOD/flair row,
+ *                       indented body, plain hoverable action row, hairline divider
+ *   - Compact mode:     80x60 rounded thumbnail on the left, tight typography
+ *
+ * Colors come from Reddit's own CSS variables when present, so light/dark
+ * mode track the site instead of being guessed.
+ */
+
+/* ---------------------------------------------------------------- tokens */
+
+.asx-root,
+.asx-tab {
+  --asx-bg: var(--color-neutral-background, #ffffff);
+  --asx-surface: var(--color-neutral-background-strong, #ffffff);
+  --asx-fg: var(--color-neutral-content, #33464c);
+  --asx-strong: var(--color-neutral-content-strong, #0f1a1c);
+  --asx-weak: var(--color-neutral-content-weak, #576f76);
+  --asx-border: var(--color-neutral-border-weak, rgba(0, 0, 0, 0.1));
+  --asx-border-strong: var(--color-neutral-border, rgba(0, 0, 0, 0.2));
+  --asx-hover: var(--color-neutral-background-hover, #f6f8f9);
+  --asx-selected: var(--color-neutral-background-selected, #e5ebee);
+  --asx-btn: var(--color-secondary-background, #e5ebee);
+  --asx-btn-hover: var(--color-secondary-background-hover, #d7dee2);
+  --asx-link: var(--color-primary, #0045ac);
+  --asx-orange: #ff4500;
+  --asx-admin: #ff4500;
+  --asx-mod: #008a10;
+  --asx-op: #0079d3;
+  --asx-nsfw: #d93900;
+  --asx-lock: #c79100;
+  --asx-skel: #e5ebee;
+  --asx-skel-hi: #f2f5f7;
+  --asx-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+.asx-root.asx-dark,
+.asx-tab.asx-dark {
+  --asx-bg: #0e1113;
+  --asx-surface: #181c1f;
+  --asx-fg: #b7cad4;
+  --asx-strong: #eef1f3;
+  --asx-weak: #8ba2ad;
+  --asx-border: rgba(255, 255, 255, 0.1);
+  --asx-border-strong: rgba(255, 255, 255, 0.2);
+  --asx-hover: #181c1f;
+  --asx-selected: #2a3236;
+  --asx-btn: #2a3236;
+  --asx-btn-hover: #333d42;
+  --asx-link: #648efc;
+  --asx-admin: #ff585b;
+  --asx-mod: #46d160;
+  --asx-op: #4fbcff;
+  --asx-nsfw: #ff585b;
+  --asx-lock: #f5c518;
+  --asx-skel: #1a2125;
+  --asx-skel-hi: #242d32;
+  --asx-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------------------------------------------------------------- panel */
+
+.asx-root {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  color: var(--asx-fg);
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.asx-root *,
+.asx-root *::before,
+.asx-root *::after {
+  box-sizing: border-box;
+}
+
+.asx-root img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* ----------------------------------------------------- feed options bar */
+
+.asx-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 6px 16px 8px;
+  border-bottom: 1px solid var(--asx-border);
+  margin-bottom: 4px;
+}
+
+.asx-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.asx-bar-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.asx-stats {
+  color: var(--asx-weak);
+  font-size: 12px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.asx-badge {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 69, 0, 0.12);
+  color: var(--asx-admin);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  cursor: help;
+}
+
+/* Reddit-style borderless dropdown triggers & popovers */
+.asx-dd {
+  position: relative;
+}
+
+.asx-dd-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--asx-weak);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.asx-dd-btn:hover,
+.asx-dd-btn[aria-expanded="true"] {
+  background: var(--asx-btn);
+  color: var(--asx-strong);
+}
+
+.asx-dd-label {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.asx-dd-chev {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.asx-dd-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 40;
+  min-width: 144px;
+  padding: 6px 0;
+  border: 1px solid var(--asx-border);
+  border-radius: 12px;
+  background: var(--asx-surface);
+  box-shadow: var(--asx-shadow);
+}
+
+.asx-dd-head {
+  padding: 6px 16px 6px;
+  color: var(--asx-strong);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.asx-dd-item {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--asx-fg);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.asx-dd-item:hover {
+  background: var(--asx-hover);
+  color: var(--asx-strong);
+}
+
+.asx-dd-item.is-active {
+  background: var(--asx-selected);
+  color: var(--asx-strong);
+  font-weight: 600;
+}
+
+.asx-dd-ico {
+  display: inline-flex;
+  line-height: 0;
+}
+
+/* Section switch — only when Reddit renders no tab strip of its own. */
+.asx-seg {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  margin-left: 4px;
+  background: var(--asx-btn);
+  border-radius: 999px;
+}
+
+.asx-has-tabs .asx-seg {
+  display: none;
+}
+
+.asx-seg-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--asx-weak);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.asx-seg-btn:hover {
+  color: var(--asx-strong);
+}
+
+.asx-seg-btn[aria-selected="true"] {
+  background: var(--asx-bg);
+  color: var(--asx-strong);
+}
+
+/* -------------------------------------------------------------- list */
+
+.asx-list {
+  display: block;
+}
+
+/* -------------------------------------------------------------- card */
+
+.asx-card {
+  margin: 0;
+}
+
+.asx-inner {
+  padding: 12px 16px;
+  border-radius: 16px;
+  margin: 4px 0;
+  cursor: pointer;
+  transition: background-color 0.08s ease;
+}
+
+.asx-card:hover .asx-inner {
+  background: var(--asx-hover);
+}
+
+.asx-post-main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.asx-hr {
+  height: 0;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--asx-border);
+}
+
+/* ------------------------------------------------------- credit block */
+
+.asx-ctx,
+.asx-credit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--asx-fg);
+}
+
+.asx-credit {
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.asx-ctx {
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.asx-avatar {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--asx-btn);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.asx-avatar-img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 24px !important;
+  height: 24px !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: cover;
+  border-radius: 999px;
+  background: var(--asx-bg);
+  display: block;
+}
+
+.asx-avatar--user {
+  font-size: 11px;
+}
+
+.asx-avatar-ch {
+  line-height: 1;
+}
+
+.asx-ctx-main {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.asx-ctx-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 18px;
+}
+
+.asx-ctx-sub {
+  flex-wrap: wrap;
+}
+
+.asx-ctx-name,
+.asx-ctx-author,
+.asx-credit-name {
+  color: var(--asx-strong);
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.asx-ctx-name:hover,
+.asx-ctx-author:hover,
+.asx-credit-name:hover,
+.asx-ctx-title:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.asx-ctx-title {
+  color: var(--asx-fg);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.asx-verb,
+.asx-edited {
+  color: var(--asx-weak);
+  white-space: nowrap;
+}
+
+.asx-dot {
+  flex: none;
+  color: var(--asx-weak);
+  font-size: 10px;
+}
+
+.asx-time {
+  flex: none;
+  color: var(--asx-weak);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------- badges */
+
+.asx-op {
+  flex: none;
+  color: var(--asx-op);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.asx-dist {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  color: var(--asx-admin);
+}
+
+.asx-dist--moderator {
+  color: var(--asx-mod);
+}
+
+.asx-dist-ico {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.asx-stat-ico {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  margin-left: 2px;
+}
+
+.asx-stat-ico--pin {
+  color: var(--asx-mod);
+}
+
+.asx-stat-ico--lock,
+.asx-stat-ico--arch {
+  color: var(--asx-lock);
+}
+
+.asx-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+
+.asx-flair {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--asx-btn);
+  color: var(--asx-strong);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.asx-flair-emoji {
+  width: 15px !important;
+  height: 15px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  object-fit: contain;
+  flex: none;
+  display: block;
+}
+
+.asx-ctx-line .asx-flair {
+  padding: 1px 6px;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.asx-nsfw {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 88, 91, 0.14);
+  color: var(--asx-nsfw);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.03em;
+}
+
+.asx-spoiler-tag {
+  flex: none;
+  padding: 1px 7px;
+  border: 1px solid var(--asx-border-strong);
+  border-radius: 999px;
+  color: var(--asx-weak);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.03em;
+}
+
+/* ------------------------------------------------------------ content */
+
+.asx-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--asx-strong);
+  letter-spacing: -0.005em;
+}
+
+.asx-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.asx-title a:hover {
+  text-decoration: none;
+}
+
+/* Media container (images, galleries, videos) */
+.asx-media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-height: 512px;
+  min-height: 160px;
+  margin: 8px 0 4px;
+  border: 1px solid var(--asx-border);
+  border-radius: 16px;
+  background: #000;
+  overflow: hidden;
+}
+
+.asx-media-bg {
+  position: absolute;
+  inset: -24px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(24px) brightness(0.45);
+  pointer-events: none;
+}
+
+.asx-media-img,
+.asx-media-vid {
+  position: relative;
+  z-index: 1;
+  display: block;
+  max-width: 100%;
+  max-height: 512px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.asx-media-vid {
+  width: 100%;
+  background: #000;
+}
+
+.asx-is-blurred .asx-media-img,
+.asx-is-blurred .asx-media-vid {
+  filter: blur(32px);
+  transform: scale(1.08);
+}
+
+.asx-media-blur {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+.asx-blur-btn {
+  appearance: none;
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(15, 26, 28, 0.82);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.asx-blur-btn:hover {
+  background: rgba(15, 26, 28, 0.96);
+}
+
+/* Gallery controls */
+.asx-gal-count {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.68);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.asx-gal-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  cursor: pointer;
+}
+
+.asx-gal-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.asx-gal-prev {
+  left: 10px;
+}
+
+.asx-gal-next {
+  right: 10px;
+}
+
+.asx-gal-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 8px 14px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.asx-vid-dur {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Crosspost nested card */
+.asx-xpost {
+  display: block;
+  margin: 8px 0 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--asx-border);
+  border-radius: 12px;
+  background: var(--asx-bg);
+  color: inherit;
+  text-decoration: none;
+}
+
+.asx-xpost:hover {
+  border-color: var(--asx-border-strong);
+}
+
+.asx-xpost-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--asx-weak);
+}
+
+.asx-xpost-sub {
+  color: var(--asx-strong);
+  font-weight: 700;
+}
+
+.asx-xpost-title {
+  margin-bottom: 6px;
+  color: var(--asx-strong);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.asx-xpost-meta {
+  color: var(--asx-weak);
+  font-size: 12px;
+}
+
+/* External link card & domain chip */
+.asx-linkcard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--asx-border);
+  border-radius: 12px;
+  background: var(--asx-bg);
+  color: inherit;
+  text-decoration: none;
+}
+
+.asx-linkcard:hover {
+  border-color: var(--asx-border-strong);
+}
+
+.asx-linkcard-info {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.asx-linkcard-host {
+  color: var(--asx-strong);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.asx-linkcard-url {
+  color: var(--asx-weak);
+  font-size: 12px;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asx-linkcard-thumb {
+  position: relative;
+  flex: none;
+  width: 96px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--asx-btn);
+}
+
+.asx-linkcard-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.asx-thumb-blur img {
+  filter: blur(12px);
+  transform: scale(1.1);
+}
+
+.asx-linkcard-badge {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+}
+
+.asx-domain {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 6px;
+  color: var(--asx-link);
+  font-size: 12px;
+  line-height: 16px;
+  text-decoration: none;
+}
+
+.asx-domain:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.asx-domain-ico {
+  display: inline-flex;
+  line-height: 0;
+}
+
+/* Markdown body */
+.asx-md {
+  color: var(--asx-fg);
+  font-size: 14px;
+  line-height: 21px;
+  overflow-wrap: anywhere;
+}
+
+.asx-card--comment .asx-md {
+  color: var(--asx-strong);
+  margin-left: 32px;
+}
+
+.asx-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
+}
+
+.asx-md p {
+  margin: 0 0 0.55em;
+}
+
+.asx-md p:last-child {
+  margin-bottom: 0;
+}
+
+.asx-md a {
+  color: var(--asx-link);
+  text-decoration: none;
+}
+
+.asx-md a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.asx-md code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--asx-btn);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+}
+
+.asx-md pre {
+  margin: 0.5em 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--asx-btn);
+  overflow-x: auto;
+}
+
+.asx-md pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.asx-md ul,
+.asx-md ol {
+  margin: 0.35em 0 0.55em;
+  padding-left: 1.5em;
+}
+
+.asx-md li {
+  margin: 0.15em 0;
+}
+
+.asx-md blockquote {
+  margin: 0.45em 0;
+  padding: 2px 12px;
+  border-left: 3px solid var(--asx-border-strong);
+  color: var(--asx-weak);
+}
+
+.asx-md .asx-h {
+  margin: 0.5em 0 0.25em;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--asx-strong);
+}
+
+.asx-spoiler {
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--asx-strong);
+  color: transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.asx-spoiler.is-revealed {
+  background: var(--asx-btn);
+  color: inherit;
+  user-select: text;
+}
+
+.asx-removed {
+  margin: 0;
+  color: var(--asx-weak);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------ actions */
+
+.asx-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 10px;
+}
+
+.asx-actions--comment {
+  margin-left: 32px;
+  padding-top: 6px;
+  gap: 4px;
+}
+
+.asx-votes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--asx-btn);
+  color: var(--asx-strong);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.asx-votes--plain {
+  height: 32px;
+  padding: 0 6px;
+  background: transparent;
+  color: var(--asx-weak);
+}
+
+.asx-votes-n {
+  min-width: 10px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.asx-vote-ico {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.asx-votes.is-neg {
+  color: var(--asx-weak);
+}
+
+.asx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--asx-btn);
+  color: var(--asx-strong);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.asx-pill:hover {
+  background: var(--asx-btn-hover);
+  color: var(--asx-strong);
+}
+
+.asx-pill-ico {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.asx-pill-ico svg,
+.asx-vote-ico svg {
+  display: block;
+  overflow: visible;
+}
+
+.asx-actions--comment .asx-pill {
+  background: transparent;
+  color: var(--asx-weak);
+  padding: 0 10px;
+}
+
+.asx-actions--comment .asx-pill:hover {
+  background: var(--asx-btn);
+  color: var(--asx-strong);
+}
+
+/* ------------------------------------------------------- compact mode */
+
+.asx-cthumb {
+  display: none;
+}
+
+.asx-compact .asx-card--post .asx-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.asx-compact .asx-cthumb {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 60px;
+  margin-top: 2px;
+  border: 1px solid var(--asx-border);
+  border-radius: 8px;
+  background: var(--asx-btn);
+  color: var(--asx-weak);
+  overflow: hidden;
+}
+
+.asx-compact .asx-cthumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.asx-compact .asx-credit {
+  margin-bottom: 3px;
+}
+
+.asx-compact .asx-title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.asx-compact .asx-tags {
+  margin: 0 0 4px;
+}
+
+.asx-compact .asx-media,
+.asx-compact .asx-post-body,
+.asx-compact .asx-linkcard,
+.asx-compact .asx-xpost {
+  display: none;
+}
+
+.asx-compact .asx-actions {
+  padding-top: 6px;
+  gap: 6px;
+}
+
+.asx-compact .asx-votes,
+.asx-compact .asx-pill {
+  height: 28px;
+  padding: 0 10px;
+}
+
+.asx-compact .asx-card--comment .asx-inner {
+  padding: 8px 16px;
+}
+
+/* ---------------------------------------------------------- skeletons */
+
+.asx-skel {
+  padding: 14px 16px;
+}
+
+.asx-skel-row,
+.asx-skel-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.asx-skel-av,
+.asx-skel-line,
+.asx-skel-title,
+.asx-skel-body,
+.asx-skel-pill {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--asx-skel) 25%, var(--asx-skel-hi) 50%, var(--asx-skel) 75%);
+  background-size: 200% 100%;
+  animation: asx-shimmer 1.3s ease-in-out infinite;
+}
+
+.asx-skel-av {
+  width: 24px;
+  height: 24px;
+}
+
+.asx-skel-line {
+  height: 12px;
+}
+
+.asx-skel-title {
+  height: 18px;
+  margin: 10px 0 8px;
+  border-radius: 6px;
+}
+
+.asx-skel-body {
+  height: 13px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+}
+
+.asx-skel-actions {
+  margin-top: 12px;
+}
+
+.asx-skel-pill {
+  height: 30px;
+}
+
+@keyframes asx-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ------------------------------------------------------------ status */
+
+.asx-status {
+  padding: 0;
+}
+
+.asx-loading,
+.asx-end,
+.asx-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 16px;
+  color: var(--asx-weak);
+  font-size: 13px;
+}
+
+.asx-end {
+  justify-content: center;
+}
+
+.asx-empty {
+  display: block;
+  text-align: center;
+  padding: 40px 24px;
+  line-height: 1.55;
+}
+
+.asx-empty strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--asx-strong);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.asx-error {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px;
+  color: var(--asx-nsfw);
+  font-size: 13px;
+}
+
+.asx-retry {
+  appearance: none;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.asx-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--asx-border-strong);
+  border-top-color: var(--asx-orange);
+  border-radius: 50%;
+  animation: asx-spin 0.7s linear infinite;
+}
+
+@keyframes asx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.asx-sentinel {
+  height: 1px;
+}
+
+/* --------------------------------------------------------------- tab */
+
+/* Reddit's tab wrapper is turned into a row so the Archive pill sits right
+ * after Comments, at the same height and with the same pill treatment. */
+.asx-tabholder {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.asx-tabrow {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.asx-tab {
+  --asx-tab-active: var(--color-neutral-background-selected, #e5ebee);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: var(--asx-strong);
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+}
+
+.asx-tab svg {
+  flex: none;
+  color: var(--asx-orange);
+}
+
+.asx-tab:hover {
+  background: var(--asx-hover);
+  color: var(--asx-strong);
+}
+
+.asx-tab--active,
+.asx-tab--active:hover {
+  background: var(--asx-tab-active);
+  color: var(--asx-strong);
+}
+
+/* Reddit's selected profile tab renders a touch lighter than the generic
+ * selected surface, so match that shade in dark mode. */
+.asx-tab.asx-dark {
+  --asx-tab-active: #3d494e;
+}
+
+.asx-tab--old {
+  display: inline-block;
+  height: auto;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.asx-tab--old.asx-tab--active {
+  background: var(--asx-selected);
+  color: var(--asx-strong);
+}
+
+@media (max-width: 700px) {
+  .asx-stats {
+    display: none;
+  }
+  .asx-card--comment .asx-md,
+  .asx-actions--comment {
+    margin-left: 0;
+  }
+}
